@@ -1,4 +1,6 @@
-import './style.css'
-import {init} from "./init.ts";
+import "./style.css";
 
-window.onload = init;
+import { init } from "./init.ts";
+import "./components/ui/StarSystemCanvas.component.ts";
+
+document.addEventListener("DOMContentLoaded", () => init());
