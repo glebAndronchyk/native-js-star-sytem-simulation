@@ -1,5 +1,4 @@
 import { StarSystemCanvasComponent } from "./StarSystemCanvas.component.ts";
-import "./styles/DebuggerButtonStyle.css";
 
 export const debuggerButtonListener = (canvas: StarSystemCanvasComponent) => {
   const debuggerButton = document.querySelector(
