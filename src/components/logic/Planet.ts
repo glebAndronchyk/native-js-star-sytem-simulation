@@ -1,48 +1,50 @@
-import { SpaceBody } from "../../types/SpaceBody.ts";
+import { Moon } from "./Moon.ts";
+import { MovableBody, MovableBodySignature } from "./MovableBody.ts";
 import { Vector } from "../../utils/Vector.ts";
+import { Star } from "./Star.ts";
+import { SpaceBody } from "../../types/SpaceBody.ts";
 
-interface PlanetSignature extends SpaceBody {
-  velocity: Vector;
+interface PlanetSignature extends MovableBodySignature {
+  moons?: Moon[] | null;
 }
 
-export class Planet implements PlanetSignature {
-  color: string;
-  mass: number;
-  r: number;
-  x: number;
-  y: number;
-  velocity: Vector;
+export class Planet extends MovableBody implements PlanetSignature {
+  moons: Moon[] | null = null;
 
-  constructor(args: PlanetSignature, speed: number, direction: number) {
-    this.x = args.x;
-    this.y = args.y;
-    this.r = args.r;
-    this.mass = args.mass;
-    this.color = args.color;
-    this.velocity = new Vector(0, 0);
-    this.velocity.setLength(speed);
-    this.velocity.setAngle(direction);
+  constructor({ moons = null, ...args }: PlanetSignature) {
+    super(args);
+    this.moons = moons;
   }
 
-  accelerate = (x: number, y: number) => this.velocity.addTo(x, y);
-  update = () => {
-    this.x += this.velocity.getX();
-    this.y += this.velocity.getY();
-  };
-  angleTo = (body: SpaceBody) => Math.atan2(body.y - this.y, body.x - this.x);
-  distanceTo(body: SpaceBody) {
-    const dx = body.x - body.y;
-    const dy = body.y - body.x;
+  update() {
+    const velocityX = this.velocity.getX();
+    const velocityY = this.velocity.getY();
 
-    return Math.sqrt(dx ** 2 + dy ** 2);
+    this.x += velocityX;
+    this.y += velocityY;
   }
-  gravitateTo(body: SpaceBody) {
+
+  attractsTo(star: Star) {
     const gravity = new Vector(0, 0);
-    const distance = this.distanceTo(body);
+    const distance = this.distanceTo(star);
+    const kineticEnergy = this.getKineticEnergy(star, distance);
+    const gravitationalEnergy = this.getGravitationalEnergy(star, distance);
+    const energySum = kineticEnergy + gravitationalEnergy;
+    const isEqual = Math.abs(energySum) === Math.abs(kineticEnergy);
+    console.log(isEqual);
+    // console.log({ kineticEnergy, gravitationalEnergy, energySum });
 
-    gravity.setLength(body.mass / distance ** 2);
-    gravity.setAngle(this.angleTo(body));
+    gravity.setLength((star.mass - this.mass) / distance ** 2);
+    gravity.setAngle(this.angleTo(star));
 
     this.velocity.addTo(gravity.getX(), gravity.getY());
+  }
+
+  getKineticEnergy(compareBody: SpaceBody, distance: number) {
+    return (2 * compareBody.mass * this.mass) / (2 * distance);
+  }
+
+  getGravitationalEnergy(compareBody: SpaceBody, distance: number) {
+    return -(2 * compareBody.mass * this.mass) / distance;
   }
 }

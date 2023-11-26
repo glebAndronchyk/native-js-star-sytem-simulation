@@ -3,6 +3,7 @@ import {
   getInitialPlanets,
   getInitialStar,
 } from "./utils/getInitialComponents.ts";
+import { debuggerButtonListener } from "./components/ui/DebuggerButton.listener.ts";
 
 export const init = () => {
   const canvas = document.querySelector<StarSystemCanvasComponent>("canvas");
@@ -10,6 +11,8 @@ export const init = () => {
   if (!canvas) {
     throw new Error("Canvas was not initialized");
   }
+
+  debuggerButtonListener(canvas);
 
   const canvasMiddlePoint: [number, number] = [
     canvas.width / 2,
