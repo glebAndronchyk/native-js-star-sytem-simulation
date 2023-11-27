@@ -1,8 +1,11 @@
 export class PickerComponent extends HTMLDivElement {
+  abortController = new AbortController();
+
   constructor(
     private buttonName = "picker",
     private pickerTitle = "picker",
-    private html_content = "",
+    private html_formBody = "",
+    private submitCallback: (form: HTMLFormElement, e: SubmitEvent) => void,
     private isOpen = false,
   ) {
     super();
@@ -21,13 +24,14 @@ export class PickerComponent extends HTMLDivElement {
         <div class="picker-header">
             <h2>${this.pickerTitle}</h2>
         </div>
-        <div>
-            ${this.html_content}
-        </div>
+        <form id="picker-form">
+            ${this.html_formBody}            
+            <button id="add-planet-button" type="submit">Pick</button>
+        </form>
     </div>
     `;
 
-    this.registerOutsideClickListener();
+    this.registerFormSubmitListener();
   }
 
   private unmountPickerBody() {
@@ -38,16 +42,18 @@ export class PickerComponent extends HTMLDivElement {
     }
   }
 
-  private registerOutsideClickListener() {
-    const listener = (e: MouseEvent) => {
-      if (e.target !== this) {
-        this.isOpen = false;
-        this.unmountPickerBody();
-        window.removeEventListener("click", listener);
-      }
-    };
-
-    window.addEventListener("click", listener);
+  private registerFormSubmitListener() {
+    const form = this.querySelector("#picker-form") as HTMLFormElement;
+    if (form) {
+      form.addEventListener(
+        "submit",
+        (e) => {
+          e.preventDefault();
+          this.submitCallback(form, e);
+        },
+        { signal: this.abortController.signal },
+      );
+    }
   }
 
   private registerPickerButtonListener() {
