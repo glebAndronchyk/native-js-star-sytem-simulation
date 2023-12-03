@@ -4,6 +4,7 @@ import {
   getInitialStar,
 } from "./utils/getInitialComponents.ts";
 import { debuggerButtonListener } from "./components/ui/DebuggerButton.listener.ts";
+import { playButtonListener } from "./components/ui/PlayButton.listener.ts";
 
 export const init = () => {
   const canvas = document.querySelector<StarSystemCanvasComponent>("canvas");
@@ -13,6 +14,7 @@ export const init = () => {
   }
 
   debuggerButtonListener(canvas);
+  playButtonListener(canvas);
 
   const canvasMiddlePoint: [number, number] = [
     canvas.width / 2,

@@ -7,11 +7,19 @@ export class StarSystemCanvasComponent extends HTMLCanvasElement {
   ctx = this.getContext("2d") as CanvasRenderingContext2D;
   planets: Planet[] = [];
   star: Star | null = null;
+  isAnimationPaused = false;
 
   connectedCallback() {
     this.resize();
     this.ctx.font = "15px Arial";
-    window.addEventListener("resize", () => this.resize());
+    // window.addEventListener("resize", () => this.resize());
+  }
+
+  handleAnimationPlay() {
+    this.isAnimationPaused = !this.isAnimationPaused;
+    if (!this.isAnimationPaused) {
+      this.update();
+    }
   }
 
   update() {
@@ -19,6 +27,10 @@ export class StarSystemCanvasComponent extends HTMLCanvasElement {
 
     this.updateContent();
     this.drawContent();
+
+    if (this.isAnimationPaused) {
+      return;
+    }
 
     requestAnimationFrame(this.update.bind(this));
   }
@@ -55,7 +67,12 @@ export class StarSystemCanvasComponent extends HTMLCanvasElement {
           y: planet.y + planet.r,
           name: planet.name,
           titleColor: planet.color,
-          content: [`x: ${planet.x}`, `y: ${planet.y}`],
+          content: [
+            `x: ${planet.x}`,
+            `y: ${planet.y}`,
+            "Gravity:",
+            ...planet.gravityVector!.debuggerView(),
+          ],
         });
       }
     });
@@ -72,7 +89,7 @@ export class StarSystemCanvasComponent extends HTMLCanvasElement {
     this.ctx.beginPath();
     this.ctx.globalAlpha = 0.5;
     this.ctx.fillStyle = "#000000";
-    this.ctx.fillRect(x, y, 200, 150);
+    this.ctx.fillRect(x, y, 200, 300);
     this.ctx.globalAlpha = 1;
 
     // debugger title
