@@ -1,4 +1,5 @@
 import { StarSystemCanvasComponent } from "./StarSystemCanvas.component.ts";
+import { globalState } from "../../state/global.ts";
 
 export const playButtonListener = (canvas: StarSystemCanvasComponent) => {
   const playButton = document.querySelector(
@@ -10,6 +11,9 @@ export const playButtonListener = (canvas: StarSystemCanvasComponent) => {
   }
 
   playButton.addEventListener("click", () => {
-    canvas.handleAnimationPlay();
+    globalState.togglePlay();
+    if (!globalState.isAnimationPaused) {
+      canvas.update();
+    }
   });
 };

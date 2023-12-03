@@ -3,6 +3,7 @@ import { MovableBody, MovableBodySignature } from "./MovableBody.ts";
 import { Vector } from "../../utils/Vector.ts";
 import { Star } from "./Star.ts";
 import { SpaceBody } from "../../types/SpaceBody.ts";
+import { globalState } from "../../state/global.ts";
 
 interface PlanetSignature extends MovableBodySignature {
   moons?: Moon[] | null;
@@ -35,8 +36,7 @@ export class Planet extends MovableBody implements PlanetSignature {
     // console.log(isEqual);
     // console.log({ kineticEnergy, gravitationalEnergy, energySum });
 
-    // TODO: add gravitational constant
-    gravity.setLength((50 * star.mass * this.mass) / distance ** 2);
+    gravity.setLength((globalState.G * star.mass * this.mass) / distance ** 2);
     gravity.setAngle(this.angleTo(star));
 
     this.gravityVector = gravity;
@@ -44,10 +44,10 @@ export class Planet extends MovableBody implements PlanetSignature {
   }
 
   getKineticEnergy(compareBody: SpaceBody, distance: number) {
-    return (compareBody.mass * this.mass) / (2 * distance);
+    return (globalState.G * compareBody.mass * this.mass) / (2 * distance);
   }
 
   getGravitationalEnergy(compareBody: SpaceBody, distance: number) {
-    return -(compareBody.mass * this.mass) / distance;
+    return -(globalState.G * compareBody.mass * this.mass) / distance;
   }
 }

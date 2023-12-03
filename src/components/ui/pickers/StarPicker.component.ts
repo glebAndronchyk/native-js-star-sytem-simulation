@@ -18,9 +18,11 @@ export class StarPickerComponent extends PickerComponent {
         const canvas =
           document.querySelector<StarSystemCanvasComponent>("canvas");
         if (canvas && canvas.star) {
-          canvas.star.mass = +formValues.mass || canvas.star.mass;
-          canvas.star.r = +formValues.r || canvas.star.r;
-          canvas.star.color = formValues.color || canvas.star.color;
+          const { mass, r, color } = formValues as any;
+
+          canvas.star.mass = +mass || canvas.star.mass;
+          canvas.star.r = +r || canvas.star.r;
+          canvas.star.color = color || canvas.star.color;
         }
       },
     );

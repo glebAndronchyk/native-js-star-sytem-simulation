@@ -18,7 +18,6 @@ export abstract class MovableBody implements MovableBodySignature {
   speed?: number;
   direction?: number;
   pathSegments: [number, number][] = [];
-  withDebugger: boolean = false;
   name: string;
 
   protected constructor(args: MovableBodySignature) {

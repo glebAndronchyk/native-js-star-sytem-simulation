@@ -2,24 +2,17 @@ import { Planet } from "../logic/Planet.ts";
 import { SpaceBody } from "../../types/SpaceBody.ts";
 import { Star } from "../logic/Star.ts";
 import { MovableBody } from "../logic/MovableBody.ts";
+import { globalState } from "../../state/global.ts";
 
 export class StarSystemCanvasComponent extends HTMLCanvasElement {
   ctx = this.getContext("2d") as CanvasRenderingContext2D;
   planets: Planet[] = [];
   star: Star | null = null;
-  isAnimationPaused = false;
 
   connectedCallback() {
     this.resize();
     this.ctx.font = "15px Arial";
     // window.addEventListener("resize", () => this.resize());
-  }
-
-  handleAnimationPlay() {
-    this.isAnimationPaused = !this.isAnimationPaused;
-    if (!this.isAnimationPaused) {
-      this.update();
-    }
   }
 
   update() {
@@ -28,7 +21,7 @@ export class StarSystemCanvasComponent extends HTMLCanvasElement {
     this.updateContent();
     this.drawContent();
 
-    if (this.isAnimationPaused) {
+    if (globalState.isAnimationPaused) {
       return;
     }
 
@@ -61,7 +54,7 @@ export class StarSystemCanvasComponent extends HTMLCanvasElement {
       this.drawCircle(planet);
       planet.moons?.forEach((moon) => this.drawCircle(moon));
 
-      if (planet.withDebugger) {
+      if (globalState.withDebugger) {
         this.drawDebuggerWindow({
           x: planet.x + planet.r,
           y: planet.y + planet.r,

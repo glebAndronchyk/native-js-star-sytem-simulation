@@ -1,6 +1,6 @@
-import { StarSystemCanvasComponent } from "./StarSystemCanvas.component.ts";
+import { globalState } from "../../state/global.ts";
 
-export const debuggerButtonListener = (canvas: StarSystemCanvasComponent) => {
+export const debuggerButtonListener = () => {
   const debuggerButton = document.querySelector(
     ".debugger-button",
   ) as HTMLButtonElement;
@@ -15,11 +15,6 @@ export const debuggerButtonListener = (canvas: StarSystemCanvasComponent) => {
       (target! as HTMLElement).innerText.includes("on") ? "off" : "on"
     }`;
 
-    canvas.planets.map((planet) => {
-      planet.moons?.map((moon) => {
-        moon.withDebugger = !moon.withDebugger;
-      });
-      planet.withDebugger = !planet.withDebugger;
-    });
+    globalState.toggleDebugger();
   });
 };
