@@ -1,3 +1,5 @@
+import "../styles/PickerComponentStyle.css";
+
 export class PickerComponent extends HTMLDivElement {
   abortController = new AbortController();
 
@@ -18,13 +20,15 @@ export class PickerComponent extends HTMLDivElement {
   }
 
   private mountPickerBody() {
+    const { top, left } = this.getBoundingClientRect();
+
     this.innerHTML = `
     ${this.innerHTML}
-    <div class="picker">
+    <div style="left:${left + 10}px;top:${top + 30}px" class="picker">
         <div class="picker-header">
             <h2>${this.pickerTitle}</h2>
         </div>
-        <form id="picker-form">
+        <form class="picker-form">
             ${this.html_formBody}            
             <button id="add-planet-button" type="submit">Pick</button>
         </form>
@@ -43,13 +47,14 @@ export class PickerComponent extends HTMLDivElement {
   }
 
   private registerFormSubmitListener() {
-    const form = this.querySelector("#picker-form") as HTMLFormElement;
+    const form = this.querySelector(".picker-form") as HTMLFormElement;
     if (form) {
       form.addEventListener(
         "submit",
         (e) => {
           e.preventDefault();
           this.submitCallback(form, e);
+          this.unmountPickerBody();
         },
         { signal: this.abortController.signal },
       );

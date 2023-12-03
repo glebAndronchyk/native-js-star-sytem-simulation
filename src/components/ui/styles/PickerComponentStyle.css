@@ -1,6 +1,13 @@
-.picker-button {
+.picker {
   position: absolute;
   top: 0;
   left: 0;
   z-index: 100;
+  background-color: #fff;
+
+  .picker-form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
 }
