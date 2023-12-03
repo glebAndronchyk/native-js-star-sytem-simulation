@@ -27,7 +27,7 @@ export abstract class MovableBody implements MovableBodySignature {
     this.r = args.r;
     this.mass = args.mass;
     this.color = args.color;
-    this.velocity = new Vector(args.velocity.getX(), args.velocity.getY());
+    this.velocity = args.velocity;
     this.velocity.setLength(args.speed || 0);
     this.velocity.setAngle(args.direction || 0);
     this.name = args.name;
@@ -37,10 +37,9 @@ export abstract class MovableBody implements MovableBodySignature {
   abstract attractsTo(body: SpaceBody): void;
   angleTo = (body: SpaceBody) => Math.atan2(body.y - this.y, body.x - this.x);
 
-  //FYI
   distanceTo(body: SpaceBody) {
-    const dx = body.y - this.x;
-    const dy = body.x - this.y;
+    const dx = body.x - this.x;
+    const dy = body.y - this.y;
 
     return Math.sqrt(dx ** 2 + dy ** 2);
   }

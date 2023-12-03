@@ -1,5 +1,3 @@
-// TODO: understand the logic
-
 export class Vector {
   #x: number;
   #y: number;
@@ -29,5 +27,9 @@ export class Vector {
   addTo(x: number, y: number) {
     this.#x += x;
     this.#y += y;
+  }
+
+  debuggerView() {
+    return [`x: ${this.#x}`, `y: ${this.#y}`];
   }
 }

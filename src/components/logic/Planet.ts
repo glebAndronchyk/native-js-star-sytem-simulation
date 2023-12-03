@@ -10,6 +10,7 @@ interface PlanetSignature extends MovableBodySignature {
 
 export class Planet extends MovableBody implements PlanetSignature {
   moons: Moon[] | null = null;
+  gravityVector: Vector | null = null;
 
   constructor({ moons = null, ...args }: PlanetSignature) {
     super(args);
@@ -27,24 +28,26 @@ export class Planet extends MovableBody implements PlanetSignature {
   attractsTo(star: Star) {
     const gravity = new Vector(0, 0);
     const distance = this.distanceTo(star);
-    const kineticEnergy = this.getKineticEnergy(star, distance);
-    const gravitationalEnergy = this.getGravitationalEnergy(star, distance);
-    const energySum = kineticEnergy + gravitationalEnergy;
-    const isEqual = Math.abs(energySum) === Math.abs(kineticEnergy);
-    console.log(isEqual);
+    // const kineticEnergy = this.getKineticEnergy(star, distance);
+    // const gravitationalEnergy = this.getGravitationalEnergy(star, distance);
+    // const energySum = kineticEnergy + gravitationalEnergy;
+    // const isEqual = Math.abs(energySum) === Math.abs(kineticEnergy);
+    // console.log(isEqual);
     // console.log({ kineticEnergy, gravitationalEnergy, energySum });
 
-    gravity.setLength((star.mass - this.mass) / distance ** 2);
+    // TODO: add gravitational constant
+    gravity.setLength((50 * star.mass * this.mass) / distance ** 2);
     gravity.setAngle(this.angleTo(star));
 
+    this.gravityVector = gravity;
     this.velocity.addTo(gravity.getX(), gravity.getY());
   }
 
   getKineticEnergy(compareBody: SpaceBody, distance: number) {
-    return (2 * compareBody.mass * this.mass) / (2 * distance);
+    return (compareBody.mass * this.mass) / (2 * distance);
   }
 
   getGravitationalEnergy(compareBody: SpaceBody, distance: number) {
-    return -(2 * compareBody.mass * this.mass) / distance;
+    return -(compareBody.mass * this.mass) / distance;
   }
 }
