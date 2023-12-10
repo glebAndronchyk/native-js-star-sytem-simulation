@@ -1,5 +1,5 @@
 export class GlobalState {
-  G = 50;
+  G = 1;
   withDebugger = false;
   isAnimationPaused = false;
 
