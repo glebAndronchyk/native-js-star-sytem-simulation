@@ -1,5 +1,6 @@
 import { SpaceBody } from "../../types/SpaceBody.ts";
 import { Vector } from "../../utils/Vector.ts";
+import { globalState } from "../../state/global.ts";
 
 export interface MovableBodySignature extends SpaceBody {
   velocity: Vector;
@@ -33,7 +34,19 @@ export abstract class MovableBody implements MovableBodySignature {
   }
 
   abstract update(bX?: number, bY?: number): void;
-  abstract attractsTo(body: SpaceBody): void;
+
+  attractsTo(spaceBody: SpaceBody) {
+    const gravity = new Vector(0, 0);
+    const distance = this.distanceTo(spaceBody);
+
+    gravity.setLength(
+      (globalState.G * spaceBody.mass * this.mass) / distance ** 2,
+    );
+    gravity.setAngle(this.angleTo(spaceBody));
+
+    this.velocity.addTo(gravity.getX(), gravity.getY());
+  }
+
   angleTo = (body: SpaceBody) => Math.atan2(body.y - this.y, body.x - this.x);
 
   distanceTo(body: SpaceBody) {

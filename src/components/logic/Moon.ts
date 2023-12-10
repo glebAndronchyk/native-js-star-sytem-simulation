@@ -1,28 +1,24 @@
 import { MovableBody, MovableBodySignature } from "./MovableBody.ts";
-import { Vector } from "../../utils/Vector.ts";
-import { Planet } from "./Planet.ts";
+
+interface MoonSignature extends Omit<MovableBodySignature, "x" | "y"> {
+  distanceFromPlanet: number;
+}
 
 export class Moon extends MovableBody {
-  constructor(args: MovableBodySignature) {
-    super(args);
+  distanceFromPlanet = 0;
+
+  constructor({ distanceFromPlanet, ...args }: MoonSignature) {
+    super({ ...args, x: 0, y: 0 });
+    this.distanceFromPlanet = distanceFromPlanet;
   }
 
   update(bodyCenterX: number, bodyCenterY: number) {
-    // console.log(this.velocity.getY());
-    const nextFramePositionX = bodyCenterX + this.velocity.getX();
-    const nextFramePositionY = bodyCenterY + this.velocity.getY();
-    // console.log('next', nextFramePositionY, 'center', bodyCenterY);
+    const nextFramePositionX =
+      bodyCenterX + this.velocity.getX() + this.distanceFromPlanet;
+    const nextFramePositionY =
+      bodyCenterY + this.velocity.getY() + this.distanceFromPlanet;
 
-    this.x =  nextFramePositionX;
+    this.x = nextFramePositionX;
     this.y = nextFramePositionY;
-  }
-  attractsTo(planet: Planet) {
-    const gravity = new Vector(0, 0);
-    const distance = this.distanceTo(planet);
-
-    gravity.setLength(planet.mass / distance ** 2);
-    gravity.setAngle(this.angleTo(planet));
-
-    this.velocity.addTo(gravity.getX(), gravity.getY());
   }
 }
