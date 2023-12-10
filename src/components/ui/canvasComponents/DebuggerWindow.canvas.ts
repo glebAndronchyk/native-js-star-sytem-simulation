@@ -3,9 +3,9 @@ import { MovableBody } from "../../logic/MovableBody.ts";
 export class DebuggerHelper {
   constructor(private ctx: CanvasRenderingContext2D) {}
 
-  public draw(body: MovableBody) {
-    this.drawDebugger(body);
-    this.drawMainVectors(body, 6, 100);
+  public draw(body: MovableBody, { window = true, vectors = true } = {}) {
+    window && this.drawDebugger(body);
+    vectors && this.drawMainVectors(body, 6, 100);
   }
 
   private drawDebugger(body: MovableBody) {

@@ -57,6 +57,9 @@ export class StarSystemCanvasComponent extends HTMLCanvasElement {
 
       if (globalState.withDebugger) {
         this.debuggerHelper.draw(planet);
+        planet.moons?.forEach((moon) =>
+          this.debuggerHelper.draw(moon, { window: false }),
+        );
       }
     });
   }
