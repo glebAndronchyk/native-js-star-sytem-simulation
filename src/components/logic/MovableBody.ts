@@ -20,6 +20,7 @@ export abstract class MovableBody implements MovableBodySignature {
   direction?: number;
   pathSegments: [number, number][] = [];
   name: string;
+  gravity: Vector = new Vector(0, 0);
 
   protected constructor(args: MovableBodySignature) {
     this.x = args.x;
@@ -43,7 +44,9 @@ export abstract class MovableBody implements MovableBodySignature {
       (globalState.G * spaceBody.mass * this.mass) / distance ** 2,
     );
     gravity.setAngle(this.angleTo(spaceBody));
+    this.gravity = gravity;
 
+    console.log({ name: this.name, gravity });
     this.velocity.addTo(gravity.getX(), gravity.getY());
   }
 

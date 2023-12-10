@@ -3,16 +3,17 @@ import { SpaceBody } from "../../types/SpaceBody.ts";
 import { Star } from "../logic/Star.ts";
 import { MovableBody } from "../logic/MovableBody.ts";
 import { globalState } from "../../state/global.ts";
+import { DebuggerHelper } from "./canvasComponents/DebuggerWindow.canvas.ts";
 
 export class StarSystemCanvasComponent extends HTMLCanvasElement {
   ctx = this.getContext("2d") as CanvasRenderingContext2D;
   planets: Planet[] = [];
   star: Star | null = null;
+  debuggerHelper = new DebuggerHelper(this.ctx);
 
   connectedCallback() {
     this.resize();
     this.ctx.font = "15px Arial";
-    // window.addEventListener("resize", () => this.resize());
   }
 
   update() {
@@ -35,14 +36,14 @@ export class StarSystemCanvasComponent extends HTMLCanvasElement {
 
   private updateContent() {
     this.planets.map((planet) => {
-      planet.attractsTo(this.star as Star);
-      this.updatePathSegments(planet);
-
       planet.moons?.map((moon) => {
         moon.attractsTo(planet);
         moon.update(planet.x, planet.y);
         this.updatePathSegments(moon);
       });
+
+      planet.attractsTo(this.star as Star);
+      this.updatePathSegments(planet);
 
       planet.update();
     });
@@ -55,48 +56,8 @@ export class StarSystemCanvasComponent extends HTMLCanvasElement {
       planet.moons?.forEach((moon) => this.drawCircle(moon));
 
       if (globalState.withDebugger) {
-        this.drawDebuggerWindow({
-          x: planet.x + planet.r,
-          y: planet.y + planet.r,
-          name: planet.name,
-          titleColor: planet.color,
-          content: [
-            `x: ${planet.x}`,
-            `y: ${planet.y}`,
-            "Gravity:",
-            ...planet.gravityVector!.debuggerView(),
-          ],
-        });
+        this.debuggerHelper.draw(planet);
       }
-    });
-  }
-
-  private drawDebuggerWindow({
-    x = 0,
-    y = 0,
-    name = "item",
-    content = [] as string[],
-    titleColor = "red",
-  }) {
-    // debugger window
-    this.ctx.beginPath();
-    this.ctx.globalAlpha = 0.5;
-    this.ctx.fillStyle = "#000000";
-    this.ctx.fillRect(x, y, 200, 300);
-    this.ctx.globalAlpha = 1;
-
-    // debugger title
-    this.ctx.font = "24px Arial";
-    this.ctx.fillStyle = titleColor;
-    this.ctx.fillText(name, x + 15, y + 25, 200);
-    this.ctx.font = "15px Arial";
-
-    // debugger content
-    this.ctx.fillStyle = "red";
-    content.map((str, index) => {
-      const xOffset = x + 15;
-      const yOffset = y + 45 * (index + 1);
-      this.ctx.fillText(str, xOffset, yOffset, 200);
     });
   }
 
