@@ -4,12 +4,20 @@ import { Star } from "../logic/Star.ts";
 import { MovableBody } from "../logic/MovableBody.ts";
 import { globalState } from "../../state/global.ts";
 import { DebuggerHelper } from "./canvasComponents/DebuggerWindow.canvas.ts";
+import { Skeleton } from "../logic/Skeleton.ts";
+import { SkeletonTypes } from "../../types/SkeletonModel.ts";
+import { SkeletonView } from "./canvasComponents/SkeletonView.canvas.ts";
 
 export class StarSystemCanvasComponent extends HTMLCanvasElement {
   ctx = this.getContext("2d") as CanvasRenderingContext2D;
   planets: Planet[] = [];
   star: Star | null = null;
+  skeletons: Record<SkeletonTypes, Skeleton> = {
+    planetSkeleton: new Skeleton(0, 0, 0),
+    starSkeleton: new Skeleton(0, 0, 0),
+  };
   debuggerHelper = new DebuggerHelper(this.ctx);
+  skeletonView = new SkeletonView(this);
 
   connectedCallback() {
     this.resize();
@@ -27,6 +35,13 @@ export class StarSystemCanvasComponent extends HTMLCanvasElement {
     }
 
     requestAnimationFrame(this.update.bind(this));
+  }
+
+  drawCircle({ x, y, r, color }: Omit<SpaceBody, "mass">) {
+    this.ctx.beginPath();
+    this.ctx.fillStyle = color;
+    this.ctx.arc(x, y, r, 0, 2 * Math.PI, false);
+    this.ctx.fill();
   }
 
   private resize() {
@@ -50,6 +65,15 @@ export class StarSystemCanvasComponent extends HTMLCanvasElement {
 
   private drawContent() {
     this.drawCircle(this.star as Star);
+
+    Object.keys(this.skeletons).forEach((key) => {
+      const castedKey = key as SkeletonTypes;
+
+      if (this.skeletons[castedKey].visible) {
+        this.skeletonView.drawSkeleton(this.skeletons[castedKey]);
+      }
+    });
+
     this.planets.forEach((planet) => {
       this.drawCircle(planet);
       planet.moons?.forEach((moon) => this.drawCircle(moon));
@@ -61,13 +85,6 @@ export class StarSystemCanvasComponent extends HTMLCanvasElement {
         );
       }
     });
-  }
-
-  private drawCircle({ x, y, r, color }: Omit<SpaceBody, "mass">) {
-    this.ctx.beginPath();
-    this.ctx.fillStyle = color;
-    this.ctx.arc(x, y, r, 0, 2 * Math.PI, false);
-    this.ctx.fill();
   }
 
   private updatePathSegments(body: MovableBody) {

@@ -6,6 +6,8 @@ export class PickerComponent extends HTMLDivElement {
     private pickerTitle = "picker",
     private html_formBody = "",
     private submitCallback: (form: HTMLFormElement, e: SubmitEvent) => void,
+    private formMountCallback?: (form: HTMLFormElement) => void,
+    private formUnmountCallback?: () => void,
     private isOpen = false,
   ) {
     super();
@@ -30,6 +32,7 @@ export class PickerComponent extends HTMLDivElement {
     const pickerBody = this.querySelector(".picker");
 
     if (pickerBody) {
+      this.formUnmountCallback && this.formUnmountCallback();
       pickerBody.remove();
     }
   }
@@ -75,6 +78,8 @@ export class PickerComponent extends HTMLDivElement {
       this.toggleOpen();
       this.unmountPickerBody();
     });
+
+    this.formMountCallback && this.formMountCallback(form);
 
     return form;
   }
