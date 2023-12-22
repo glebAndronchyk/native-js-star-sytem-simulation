@@ -30,5 +30,6 @@ export class SkeletonView {
     this.ctx.lineWidth = lineWidth;
     this.ctx.setLineDash([15, 3]);
     this.ctx.stroke();
+    this.ctx.setLineDash([0, 0]);
   }
 }
