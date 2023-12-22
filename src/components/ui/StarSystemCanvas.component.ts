@@ -39,7 +39,6 @@ export class StarSystemCanvasComponent extends HTMLCanvasElement {
       planet.moons?.map((moon) => {
         moon.attractsTo(planet);
         moon.update(planet.x, planet.y);
-        this.updatePathSegments(moon);
       });
 
       planet.attractsTo(this.star as Star);
