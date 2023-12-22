@@ -11,12 +11,8 @@ export class PickerComponent extends HTMLDivElement {
     super();
   }
 
-  private open() {
-    this.isOpen = true;
-  }
-
-  private close() {
-    this.isOpen = false;
+  private toggleOpen() {
+    this.isOpen = !this.isOpen;
   }
 
   connectedCallback() {
@@ -54,9 +50,11 @@ export class PickerComponent extends HTMLDivElement {
     pickerButton.innerText = this.buttonName;
 
     pickerButton.addEventListener("click", () => {
-      this.open();
+      this.toggleOpen();
       if (this.isOpen) {
         this.mountPickerBody();
+      } else {
+        this.unmountPickerBody();
       }
     });
 
@@ -74,7 +72,7 @@ export class PickerComponent extends HTMLDivElement {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       this.submitCallback(form, e);
-      this.close();
+      this.toggleOpen();
       this.unmountPickerBody();
     });
 
