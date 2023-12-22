@@ -51,10 +51,10 @@ export const getInitialPlanets = (cX: number, cY: number) => [
     moons: [
       new Moon({
         speed: 2,
-        mass: 5,
+        mass: 8,
         color: "#cd1818",
         r: 5,
-        distanceFromPlanet: 45,
+        distanceFromPlanet: 65,
         velocity: new Vector(5, 0),
         direction: -Math.PI / 2,
         name: "moon",
