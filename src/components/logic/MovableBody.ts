@@ -46,7 +46,6 @@ export abstract class MovableBody implements MovableBodySignature {
     gravity.setAngle(this.angleTo(spaceBody));
     this.gravity = gravity;
 
-    console.log({ name: this.name, gravity });
     this.velocity.addTo(gravity.getX(), gravity.getY());
   }
 
