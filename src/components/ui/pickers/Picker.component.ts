@@ -1,8 +1,6 @@
 import "../styles/PickerComponentStyle.css";
 
 export class PickerComponent extends HTMLDivElement {
-  abortController = new AbortController();
-
   constructor(
     private buttonName = "picker",
     private pickerTitle = "picker",
@@ -13,29 +11,23 @@ export class PickerComponent extends HTMLDivElement {
     super();
   }
 
-  connectedCallback() {
-    this.innerHTML = `<button class="picker-button">${this.buttonName}</button>`;
+  private open() {
+    this.isOpen = true;
+  }
 
-    this.registerPickerButtonListener();
+  private close() {
+    this.isOpen = false;
+  }
+
+  connectedCallback() {
+    // Mounts picker button when parent div element connects to DOM
+    this.append(this.createPickerButton());
   }
 
   private mountPickerBody() {
-    const { top, left } = this.getBoundingClientRect();
+    const { parent } = this.getAtomicComponents();
 
-    this.innerHTML = `
-    ${this.innerHTML}
-    <div style="left:${left + 10}px;top:${top + 30}px" class="picker">
-        <div class="picker-header">
-            <h2>${this.pickerTitle}</h2>
-        </div>
-        <form class="picker-form">
-            ${this.html_formBody}            
-            <button id="add-planet-button" type="submit">Pick</button>
-        </form>
-    </div>
-    `;
-
-    this.registerFormSubmitListener();
+    this.append(parent);
   }
 
   private unmountPickerBody() {
@@ -46,34 +38,66 @@ export class PickerComponent extends HTMLDivElement {
     }
   }
 
-  private registerFormSubmitListener() {
-    const form = this.querySelector(".picker-form") as HTMLFormElement;
-    if (form) {
-      form.addEventListener(
-        "submit",
-        (e) => {
-          e.preventDefault();
-          this.submitCallback(form, e);
-          this.unmountPickerBody();
-        },
-        { signal: this.abortController.signal },
-      );
-    }
+  private getAtomicComponents() {
+    const pickerDiv = this.createPickerDiv();
+    const pickerTitle = this.createPickerTitle();
+    const form = this.createForm();
+
+    pickerDiv.append(pickerTitle, form);
+
+    return { parent: pickerDiv, pickerTitle, form };
   }
 
-  private registerPickerButtonListener() {
-    const pickerButton = this.querySelector(".picker-button");
-    if (pickerButton) {
-      pickerButton.addEventListener("click", (e) => {
-        e.stopPropagation();
-        this.isOpen = !this.isOpen;
-        if (this.isOpen) {
-          this.mountPickerBody();
-        } else {
-          this.unmountPickerBody();
-        }
-      });
-    }
+  private createPickerButton() {
+    const pickerButton = document.createElement("button");
+    pickerButton.classList.add("picker-button");
+    pickerButton.innerText = this.buttonName;
+
+    pickerButton.addEventListener("click", () => {
+      this.open();
+      if (this.isOpen) {
+        this.mountPickerBody();
+      }
+    });
+
+    return pickerButton;
+  }
+
+  private createForm() {
+    const form = document.createElement("form");
+    form.classList.add("picker-form");
+    form.innerHTML = `
+      ${this.html_formBody}            
+      <button id="pick-button" type="submit">Pick</button>
+    `;
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      this.submitCallback(form, e);
+      this.close();
+      this.unmountPickerBody();
+    });
+
+    return form;
+  }
+
+  private createPickerTitle() {
+    const pickerTitle = document.createElement("div");
+    pickerTitle.classList.add("picker-header");
+    pickerTitle.innerHTML = `<h2>${this.pickerTitle}</h2>`;
+
+    return pickerTitle;
+  }
+
+  private createPickerDiv() {
+    const { top, left } = this.getBoundingClientRect();
+
+    const pickerDiv = document.createElement("div");
+    pickerDiv.classList.add("picker");
+    pickerDiv.style.left = `${left + 10}px`;
+    pickerDiv.style.top = `${top + 30}px`;
+
+    return pickerDiv;
   }
 }
 
