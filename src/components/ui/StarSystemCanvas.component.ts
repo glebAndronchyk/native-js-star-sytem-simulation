@@ -85,13 +85,13 @@ export class StarSystemCanvasComponent extends HTMLCanvasElement {
   // TODO: refactor
   private drawContent() {
     this.drawCircle(this.star as Star);
-    const { skeletons, drawSkeleton } = this.skeletonView;
 
-    Object.keys(skeletons).forEach((key) => {
+    Object.keys(this.skeletonView.skeletons).forEach((key) => {
       const castedKey = key as SkeletonTypes;
+      const skeleton = this.skeletonView.skeletons[castedKey];
 
-      if (skeletons[castedKey].visible) {
-        drawSkeleton(skeletons[castedKey]);
+      if (skeleton.visible) {
+        this.skeletonView.drawSkeleton(skeleton);
       }
     });
 
