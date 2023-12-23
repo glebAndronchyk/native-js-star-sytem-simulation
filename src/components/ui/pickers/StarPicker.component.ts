@@ -1,6 +1,7 @@
 import { PickerComponent } from "./Picker.component.ts";
 import { getFormValues } from "../../../utils/getFormValues.ts";
 import { StarSystemCanvasComponent } from "../StarSystemCanvas.component.ts";
+import { ModelComponentsListComponent } from "../lists/ModelComponentsList.component.ts";
 
 export class StarPickerComponent extends PickerComponent {
   constructor() {
@@ -13,6 +14,9 @@ export class StarPickerComponent extends PickerComponent {
     const { starSkeleton } = canvas.skeletonView.skeletons;
 
     const submitCallback = (form: HTMLFormElement) => {
+      const componentsList = document.querySelector(
+        ".model-components-list",
+      ) as ModelComponentsListComponent;
       const formValues = getFormValues(form.elements);
 
       const { mass, r, color } = formValues as any;
@@ -20,6 +24,8 @@ export class StarPickerComponent extends PickerComponent {
       canvas.star!.mass = +mass || canvas.star!.mass;
       canvas.star!.r = +r || canvas.star!.r;
       canvas.star!.color = color || canvas.star!.color;
+
+      componentsList.render();
     };
 
     const formMountCallback = (form: HTMLFormElement) => {

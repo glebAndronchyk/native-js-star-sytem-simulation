@@ -3,6 +3,7 @@ import { StarSystemCanvasComponent } from "../StarSystemCanvas.component.ts";
 import { Vector } from "../../../utils/Vector.ts";
 import { Planet } from "../../logic/Planet.ts";
 import { getFormValues } from "../../../utils/getFormValues.ts";
+import { ModelComponentsListComponent } from "../lists/ModelComponentsList.component.ts";
 
 export class PlanetPickerComponent extends PickerComponent {
   constructor() {
@@ -15,6 +16,9 @@ export class PlanetPickerComponent extends PickerComponent {
     const { planetSkeleton } = canvas.skeletonView.skeletons;
 
     const submitCallback = (form: HTMLFormElement) => {
+      const componentsList = document.querySelector(
+        ".model-components-list",
+      ) as ModelComponentsListComponent;
       const formValues = getFormValues(form.elements);
 
       const cX = canvas.width / 2;
@@ -35,6 +39,7 @@ export class PlanetPickerComponent extends PickerComponent {
           name: name || "Planet",
         }),
       );
+      componentsList.render();
     };
 
     const formMountCallback = (form: HTMLFormElement) => {

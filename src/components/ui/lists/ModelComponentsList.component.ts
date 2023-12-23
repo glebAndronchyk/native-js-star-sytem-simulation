@@ -2,10 +2,17 @@ import { StarSystemCanvasComponent } from "../StarSystemCanvas.component.ts";
 import { Planet } from "../../logic/Planet.ts";
 import { Moon } from "../../logic/Moon.ts";
 
+import "../styles/ModelsComponentsListStyle.css";
+
 export class ModelComponentsListComponent extends HTMLUListElement {
   canvas = document.querySelector("canvas") as StarSystemCanvasComponent;
 
   connectedCallback() {
+    this.render();
+    this.classList.add("model-components-list");
+  }
+
+  render() {
     const { SectionTitle, Section, canvas } = this;
 
     this.innerHTML = `
@@ -15,7 +22,6 @@ export class ModelComponentsListComponent extends HTMLUListElement {
       ${Section(canvas.planets)}
     `;
 
-    this.classList.add("model-components-list");
     this.setButtonListeners();
   }
 
@@ -25,8 +31,9 @@ export class ModelComponentsListComponent extends HTMLUListElement {
     buttons.forEach((button) => {
       const [parentIdx, bodyIdx, level, action] = button.id.split("-");
 
-      const handleDelete = () =>
-        this.deleteCallback(bodyIdx, parentIdx, +level);
+      const handleDelete = this.callbackResolver(() =>
+        this.deleteCallback(bodyIdx, parentIdx, +level),
+      );
       const handleHighlight = () =>
         this.highlightCallback(+bodyIdx, +parentIdx, +level);
 
@@ -35,6 +42,13 @@ export class ModelComponentsListComponent extends HTMLUListElement {
         action === "delete" ? handleDelete : handleHighlight,
       );
     });
+  }
+
+  private callbackResolver(fn: () => void) {
+    return () => {
+      fn();
+      this.render();
+    };
   }
 
   private deleteCallback(bodyIdx: string, parentIdx: string, level: number) {
