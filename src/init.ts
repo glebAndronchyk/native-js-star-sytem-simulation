@@ -13,9 +13,6 @@ export const init = () => {
     throw new Error("Canvas was not initialized");
   }
 
-  debuggerButtonListener(canvas);
-  playButtonListener(canvas);
-
   const canvasMiddlePoint: [number, number] = [
     canvas.width / 2,
     canvas.height / 2,
@@ -24,5 +21,16 @@ export const init = () => {
   canvas.planets = [...getInitialPlanets(...canvasMiddlePoint)];
   canvas.star = { ...getInitialStar(...canvasMiddlePoint) };
 
+  initializeModelControls(canvas);
+
   canvas.update();
+};
+
+const initializeModelControls = (canvas: StarSystemCanvasComponent) => {
+  debuggerButtonListener();
+  playButtonListener(canvas);
+
+  // Should do this in order to receive actual components data on render
+  const ul = document.createElement("ul", { is: "model-components-list" });
+  document.querySelector(".model-controls")?.append(ul);
 };

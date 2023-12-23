@@ -6,6 +6,8 @@
     <title>Vite + TS</title>
   </head>
   <body>
+    <script type="module" src="/src/main.ts"></script>
+
     <div id="app">
       <div class="buttons-container">
         <button class="debugger-button">Debugger mode: off</button>
@@ -13,9 +15,10 @@
         <div is="planet-picker"></div>
         <div is="star-picker"></div>
       </div>
-      <div is="globals-picker"></div>
+      <div class="model-controls">
+        <form is="globals-picker"></form>
+      </div>
       <canvas is="star-system-canvas" class="canvas"></canvas>
     </div>
-    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
