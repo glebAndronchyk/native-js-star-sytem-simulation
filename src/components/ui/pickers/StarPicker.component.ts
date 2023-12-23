@@ -10,6 +10,8 @@ export class StarPickerComponent extends PickerComponent {
       throw new Error("Component were not initialized yet");
     }
 
+    const { starSkeleton } = canvas.skeletonView.skeletons;
+
     const submitCallback = (form: HTMLFormElement) => {
       const formValues = getFormValues(form.elements);
 
@@ -30,7 +32,7 @@ export class StarPickerComponent extends PickerComponent {
           const cX = canvas.width / 2;
           const cY = canvas.height / 2;
 
-          canvas.skeletons.starSkeleton.setValues({
+          starSkeleton.setValues({
             visible: true,
             x: cX,
             y: cY,
@@ -41,7 +43,7 @@ export class StarPickerComponent extends PickerComponent {
       }
     };
 
-    const formUnmountCallback = () => canvas.skeletons.starSkeleton.reset();
+    const formUnmountCallback = () => starSkeleton.reset();
 
     super(
       "Pick star",

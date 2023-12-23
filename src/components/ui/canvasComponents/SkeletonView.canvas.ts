@@ -1,11 +1,22 @@
 import { StarSystemCanvasComponent } from "../StarSystemCanvas.component.ts";
 import { Skeleton } from "../../logic/Skeleton.ts";
+import { MovableBody } from "../../logic/MovableBody.ts";
+import { SkeletonTypes } from "../../../types/SkeletonModel.ts";
 
 export class SkeletonView {
+  skeletons: Record<SkeletonTypes, Skeleton> = {
+    planetSkeleton: new Skeleton(0, 0, 0),
+    starSkeleton: new Skeleton(0, 0, 0),
+  };
+
   private ctx: CanvasRenderingContext2D;
 
   constructor(private canvas: StarSystemCanvasComponent) {
     this.ctx = canvas.ctx;
+  }
+
+  drawHighlight(body: MovableBody) {
+    this.drawSkeleton(new Skeleton(body.x, body.y, body.r + 10));
   }
 
   public drawSkeleton(skeleton: Skeleton) {

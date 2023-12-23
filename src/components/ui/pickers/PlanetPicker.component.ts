@@ -12,6 +12,8 @@ export class PlanetPickerComponent extends PickerComponent {
       throw new Error("Component were not initialized yet");
     }
 
+    const { planetSkeleton } = canvas.skeletonView.skeletons;
+
     const submitCallback = (form: HTMLFormElement) => {
       const formValues = getFormValues(form.elements);
 
@@ -45,7 +47,7 @@ export class PlanetPickerComponent extends PickerComponent {
           const skeletonX = canvas.width / 2 + (+x || 0);
           const skeletonY = canvas.height / 2 + (+y || 0);
 
-          canvas.skeletons.planetSkeleton.setValues({
+          planetSkeleton.setValues({
             visible: true,
             x: skeletonX,
             y: skeletonY,
@@ -56,7 +58,7 @@ export class PlanetPickerComponent extends PickerComponent {
       }
     };
 
-    const formUnmountCallback = () => canvas.skeletons.planetSkeleton.reset();
+    const formUnmountCallback = () => planetSkeleton.reset();
 
     super(
       "Pick planet",

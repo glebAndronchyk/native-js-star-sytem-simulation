@@ -4,20 +4,17 @@ import { Star } from "../logic/Star.ts";
 import { MovableBody } from "../logic/MovableBody.ts";
 import { globalState } from "../../state/global.ts";
 import { DebuggerHelper } from "./canvasComponents/DebuggerWindow.canvas.ts";
-import { Skeleton } from "../logic/Skeleton.ts";
 import { SkeletonTypes } from "../../types/SkeletonModel.ts";
 import { SkeletonView } from "./canvasComponents/SkeletonView.canvas.ts";
+import { HighlightedElement } from "../logic/HighlightedElement.ts";
 
 export class StarSystemCanvasComponent extends HTMLCanvasElement {
   ctx = this.getContext("2d") as CanvasRenderingContext2D;
   planets: Planet[] = [];
   star: Star | null = null;
-  skeletons: Record<SkeletonTypes, Skeleton> = {
-    planetSkeleton: new Skeleton(0, 0, 0),
-    starSkeleton: new Skeleton(0, 0, 0),
-  };
   debuggerHelper = new DebuggerHelper(this.ctx);
   skeletonView = new SkeletonView(this);
+  highlightedElement = new HighlightedElement();
 
   connectedCallback() {
     this.resize();
@@ -44,6 +41,28 @@ export class StarSystemCanvasComponent extends HTMLCanvasElement {
     this.ctx.fill();
   }
 
+  setHighlightedElement(bodyIdx: number, parentIdx: number | null = null) {
+    // In future this should be refactored in order to handle more complex logic
+
+    const isPlanetAlreadyHighlighted =
+      parentIdx === null && this.highlightedElement.x === bodyIdx;
+    const isMoonAlreadyHighlighted =
+      parentIdx !== null &&
+      this.highlightedElement.x === parentIdx &&
+      this.highlightedElement.y === bodyIdx;
+
+    if (isPlanetAlreadyHighlighted || isMoonAlreadyHighlighted) {
+      this.highlightedElement.reset();
+      return;
+    }
+
+    if (!parentIdx) {
+      this.highlightedElement.highlight(bodyIdx);
+    } else {
+      this.highlightedElement.highlight(parentIdx, bodyIdx);
+    }
+  }
+
   private resize() {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
@@ -63,20 +82,38 @@ export class StarSystemCanvasComponent extends HTMLCanvasElement {
     });
   }
 
+  // TODO: refactor
   private drawContent() {
     this.drawCircle(this.star as Star);
+    const { skeletons, drawSkeleton } = this.skeletonView;
 
-    Object.keys(this.skeletons).forEach((key) => {
+    Object.keys(skeletons).forEach((key) => {
       const castedKey = key as SkeletonTypes;
 
-      if (this.skeletons[castedKey].visible) {
-        this.skeletonView.drawSkeleton(this.skeletons[castedKey]);
+      if (skeletons[castedKey].visible) {
+        drawSkeleton(skeletons[castedKey]);
       }
     });
 
-    this.planets.forEach((planet) => {
+    this.planets.forEach((planet, planetIndex) => {
       this.drawCircle(planet);
-      planet.moons?.forEach((moon) => this.drawCircle(moon));
+      const { x: parentIdx, y: bodyIdx } = this.highlightedElement;
+      const isPlanetHighlighted = bodyIdx === null && planetIndex === parentIdx;
+
+      if (isPlanetHighlighted) {
+        this.skeletonView.drawHighlight(planet);
+      }
+
+      planet.moons?.forEach((moon, moonIndex) => {
+        const isMoonHighlighted =
+          planetIndex === parentIdx && moonIndex === bodyIdx;
+
+        if (isMoonHighlighted) {
+          this.skeletonView.drawHighlight(moon);
+        }
+
+        this.drawCircle(moon);
+      });
 
       if (globalState.withDebugger) {
         this.debuggerHelper.draw(planet);
