@@ -6,8 +6,6 @@ import { Vector } from "../../../utils/Vector.ts";
 import { Moon } from "../../logic/Moon.ts";
 
 export class MoonPickerComponent extends PickerComponent {
-
-  // TODO: refactor
   constructor() {
     const canvas = document.querySelector<StarSystemCanvasComponent>("canvas");
 
@@ -26,14 +24,18 @@ export class MoonPickerComponent extends PickerComponent {
 
       const { r, color, mass, speed, name } = formValues as any;
 
+      if (!r || !mass || !speed) {
+        return;
+      }
+
       canvas.planets[planetIdx].moons?.push(
         new Moon({
           distanceFromPlanet: 50,
-          r: +r || 0,
+          r: +r,
           color: color || "white",
-          mass: +mass || 0,
+          mass: +mass,
           velocity: new Vector(0, 0),
-          speed: +speed || 0,
+          speed: +speed,
           direction: -Math.PI / 2,
           name: name || "Moon",
         }),

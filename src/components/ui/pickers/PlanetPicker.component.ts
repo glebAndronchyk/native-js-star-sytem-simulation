@@ -26,15 +26,19 @@ export class PlanetPickerComponent extends PickerComponent {
 
       const { x, y, r, color, mass, speed, name } = formValues as any;
 
+      if (!x || !y || !r || !mass || !speed) {
+        return;
+      }
+
       canvas.planets.push(
         new Planet({
-          x: cX + (+x || 0),
-          y: cY + (+y || 0),
-          r: +r || 0,
+          x: cX + +x,
+          y: cY + +y,
+          r: +r,
           color: color || "white",
-          mass: +mass || 0,
+          mass: +mass,
           velocity: new Vector(0, 0),
-          speed: +speed || 0,
+          speed: +speed,
           direction: -Math.PI / 2,
           name: name || "Planet",
         }),

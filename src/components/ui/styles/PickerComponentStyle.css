@@ -4,6 +4,7 @@
   left: 0;
   z-index: 100;
   background-color: #fff;
+  color: #000;
 
   .picker-form {
     display: flex;
