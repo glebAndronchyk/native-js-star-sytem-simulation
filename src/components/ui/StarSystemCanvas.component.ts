@@ -86,15 +86,6 @@ export class StarSystemCanvasComponent extends HTMLCanvasElement {
   private drawContent() {
     this.drawCircle(this.star as Star);
 
-    Object.keys(this.skeletonView.skeletons).forEach((key) => {
-      const castedKey = key as SkeletonTypes;
-      const skeleton = this.skeletonView.skeletons[castedKey];
-
-      if (skeleton.visible) {
-        this.skeletonView.drawSkeleton(skeleton);
-      }
-    });
-
     this.planets.forEach((planet, planetIndex) => {
       this.drawCircle(planet);
       const { x: parentIdx, y: bodyIdx } = this.highlightedElement;
@@ -120,6 +111,21 @@ export class StarSystemCanvasComponent extends HTMLCanvasElement {
         planet.moons?.forEach((moon) =>
           this.debuggerHelper.draw(moon, { window: false }),
         );
+      }
+    });
+
+    Object.keys(this.skeletonView.skeletons).forEach((key) => {
+      const castedKey = key as SkeletonTypes;
+      const skeleton = this.skeletonView.skeletons[castedKey];
+
+      if (skeleton.visible) {
+        if (skeleton.relatedObjectIndex !== undefined) {
+          const planet = this.planets[skeleton.relatedObjectIndex];
+          skeleton.x = planet?.x + skeleton.customOffset!;
+          skeleton.y = planet?.y + skeleton.customOffset!;
+        }
+
+        this.skeletonView.drawSkeleton(skeleton);
       }
     });
   }

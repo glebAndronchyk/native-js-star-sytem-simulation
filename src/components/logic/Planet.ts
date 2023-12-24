@@ -2,13 +2,13 @@ import { Moon } from "./Moon.ts";
 import { MovableBody, MovableBodySignature } from "./MovableBody.ts";
 
 interface PlanetSignature extends MovableBodySignature {
-  moons?: Moon[] | null;
+  moons?: Moon[];
 }
 
 export class Planet extends MovableBody implements PlanetSignature {
-  moons: Moon[] | null = null;
+  moons: Moon[];
 
-  constructor({ moons = null, ...args }: PlanetSignature) {
+  constructor({ moons = [], ...args }: PlanetSignature) {
     super(args);
     this.moons = moons;
   }

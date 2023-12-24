@@ -3,6 +3,7 @@ import { Planet } from "../../logic/Planet.ts";
 import { Moon } from "../../logic/Moon.ts";
 
 import "../styles/ModelsComponentsListStyle.css";
+import { MoonPickerComponent } from "../pickers/MoonPicker.component.ts";
 
 export class ModelComponentsListComponent extends HTMLUListElement {
   canvas = document.querySelector("canvas") as StarSystemCanvasComponent;
@@ -22,6 +23,15 @@ export class ModelComponentsListComponent extends HTMLUListElement {
       ${Section(canvas.planets)}
     `;
 
+    this.querySelectorAll("#lvl0-btn-wrapper").forEach((wrapper, index) => {
+      const moonPicker = document.createElement("div", {
+        is: "moon-picker",
+      }) as MoonPickerComponent;
+      moonPicker.setAttribute("planet-idx", `${index}`);
+
+      wrapper.append(moonPicker);
+    });
+
     this.setButtonListeners();
   }
 
@@ -34,6 +44,7 @@ export class ModelComponentsListComponent extends HTMLUListElement {
       const handleDelete = this.callbackResolver(() =>
         this.deleteCallback(bodyIdx, parentIdx, +level),
       );
+
       const handleHighlight = () =>
         this.highlightCallback(+bodyIdx, +parentIdx, +level);
 
@@ -82,9 +93,11 @@ export class ModelComponentsListComponent extends HTMLUListElement {
 
         return `
           <li style="margin-left: ${level * 0.75}rem">
-                <span style="color: ${body.color}">${body.name}</span>
-                <button id="${idBase}-delete" class="delete-btn">Delete</button>
-                <button id="${idBase}-highlight" class="hightlight-btn">Highlight</button>
+                <div id="lvl${level}-btn-wrapper" class="btn-wrapper">
+                    <span style="color: ${body.color}">${body.name}</span>
+                    <button id="${idBase}-delete" class="delete-btn">Delete</button>
+                    <button id="${idBase}-highlight" class="hightlight-btn">Highlight</button>
+                </div>
                 ${
                   "moons" in body && body.moons
                     ? this.Section(body.moons, index, level + 1)

@@ -7,6 +7,7 @@ export class SkeletonView {
   skeletons: Record<SkeletonTypes, Skeleton> = {
     planetSkeleton: new Skeleton(0, 0, 0),
     starSkeleton: new Skeleton(0, 0, 0),
+    moonSkeleton: new Skeleton(0, 0, 0),
   };
 
   private ctx: CanvasRenderingContext2D;

@@ -1,6 +1,8 @@
 import "../styles/PickerComponentStyle.css";
 
 export class PickerComponent extends HTMLDivElement {
+  private isOpen = false;
+
   constructor(
     private buttonName = "picker",
     private pickerTitle = "picker",
@@ -8,7 +10,7 @@ export class PickerComponent extends HTMLDivElement {
     private submitCallback: (form: HTMLFormElement, e: SubmitEvent) => void,
     private formMountCallback?: (form: HTMLFormElement) => void,
     private formUnmountCallback?: () => void,
-    private isOpen = false,
+    private offsetPx = 0,
   ) {
     super();
   }
@@ -95,9 +97,11 @@ export class PickerComponent extends HTMLDivElement {
   private createPickerDiv() {
     const { top, left } = this.getBoundingClientRect();
 
+    const leftPos = left + this.offsetPx;
+
     const pickerDiv = document.createElement("div");
     pickerDiv.classList.add("picker");
-    pickerDiv.style.left = `${left + 10}px`;
+    pickerDiv.style.left = `${leftPos + 10}px`;
     pickerDiv.style.top = `${top + 30}px`;
 
     return pickerDiv;

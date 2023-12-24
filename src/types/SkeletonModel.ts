@@ -4,6 +4,8 @@ export interface SkeletonModel {
   r: number;
   color?: string;
   visible?: boolean;
+  relatedObjectIndex?: number;
+  customOffset?: number;
 }
 
-export type SkeletonTypes = "planetSkeleton" | "starSkeleton";
+export type SkeletonTypes = "planetSkeleton" | "starSkeleton" | "moonSkeleton";
