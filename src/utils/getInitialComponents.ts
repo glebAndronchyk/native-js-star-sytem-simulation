@@ -5,7 +5,7 @@ import { Moon } from "../components/logic/Moon.ts";
 
 export const getInitialPlanets = (cX: number, cY: number) => [
   new Planet({
-    x: cX + 300,
+    x: cX + 350,
     y: cY,
     r: 10,
     color: "#00ffd9",
@@ -16,14 +16,25 @@ export const getInitialPlanets = (cX: number, cY: number) => [
     name: "p2",
   }),
   new Planet({
-    x: cX - 700,
+    x: cX + 700,
+    y: cY,
+    r: 10,
+    color: "#dad71e",
+    mass: 20,
+    velocity: new Vector(0, 0),
+    speed: 4,
+    direction: -Math.PI / 2,
+    name: "p2",
+  }),
+  new Planet({
+    x: cX + 900,
     y: cY,
     r: 10,
     color: "#3bd70e",
     mass: 8,
     velocity: new Vector(0, 0),
-    speed: 2,
-    direction: Math.PI / 2,
+    speed: 1,
+    direction: -Math.PI / 2,
     name: "p2",
     moons: [
       new Moon({
