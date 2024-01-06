@@ -24,9 +24,9 @@ export class MoonPickerComponent extends PickerComponent {
 
       const { r, color, mass, speed, name } = formValues as any;
 
-      // if (!r || !mass || !speed) {
-      //   return;
-      // }
+      if (!r || !mass || !speed) {
+        return;
+      }
 
       canvas.planets[planetIdx].moons?.push(
         new Moon({

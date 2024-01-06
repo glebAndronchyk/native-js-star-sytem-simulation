@@ -69,26 +69,51 @@ export class StarSystemCanvasComponent extends HTMLCanvasElement {
   }
 
   private updateContent() {
-    this.planets.forEach((planet) => {
+    this.planets.map((planet) => {
+      planet.moons?.map((moon) => {
+        moon.attractsTo(planet);
+        moon.update(planet.x, planet.y);
+      });
+
       planet.attractsTo(this.star as Star);
       this.updatePathSegments(planet);
 
       planet.update();
-
-      planet.moons?.forEach((moon) => {
-        moon.attractsTo(planet);
-        moon.update(planet.x, planet.y);
-      });
     });
   }
 
+  // TODO: refactor
   private drawContent() {
     this.drawCircle(this.star as Star);
-    this.drawPlanets();
-    this.drawSkeletons();
-  }
 
-  private drawSkeletons() {
+    this.planets.forEach((planet, planetIndex) => {
+      this.drawCircle(planet);
+      const { x: parentIdx, y: bodyIdx } = this.highlightedElement;
+      const isPlanetHighlighted = bodyIdx === null && planetIndex === parentIdx;
+
+      if (isPlanetHighlighted) {
+        this.skeletonView.drawHighlight(planet);
+      }
+
+      planet.moons?.forEach((moon, moonIndex) => {
+        const isMoonHighlighted =
+          planetIndex === parentIdx && moonIndex === bodyIdx;
+
+        if (isMoonHighlighted) {
+          this.skeletonView.drawHighlight(moon);
+        }
+
+        this.drawCircle(moon);
+      });
+
+      if (globalState.withDebugger) {
+        this.debuggerHelper.draw(planet);
+        planet.moons?.forEach((moon) =>
+          this.debuggerHelper.draw(moon, { window: false }),
+        );
+      }
+    });
+
     Object.keys(this.skeletonView.skeletons).forEach((key) => {
       const castedKey = key as SkeletonTypes;
       const skeleton = this.skeletonView.skeletons[castedKey];
@@ -105,43 +130,6 @@ export class StarSystemCanvasComponent extends HTMLCanvasElement {
     });
   }
 
-  private drawPlanets() {
-    this.planets.forEach((planet, planetIndex) => {
-      this.drawCircle(planet);
-      const { x: parentIdx, y: bodyIdx } = this.highlightedElement;
-      const isPlanetHighlighted = bodyIdx === null && planetIndex === parentIdx;
-
-      if (isPlanetHighlighted) {
-        this.skeletonView.drawHighlight(planet);
-      }
-
-      this.drawMoons(planet, planetIndex, parentIdx, bodyIdx);
-      this.drawDebugger(planet);
-    });
-  }
-
-  private drawDebugger(planet: Planet) {
-    if (globalState.withDebugger) {
-      this.debuggerHelper.draw(planet);
-      planet.moons?.forEach((moon) =>
-          this.debuggerHelper.draw(moon, { window: false }),
-      );
-    }
-  }
-
-  private drawMoons(planet: Planet, planetIndex: number, parentIdx: number | null, bodyIdx: number | null ) {
-    planet.moons?.forEach((moon, moonIndex) => {
-      const isMoonHighlighted =
-          planetIndex === parentIdx && moonIndex === bodyIdx;
-
-      if (isMoonHighlighted) {
-        this.skeletonView.drawHighlight(moon);
-      }
-
-      this.drawCircle(moon);
-    });
-  }
-
   private updatePathSegments(body: MovableBody) {
     body.pathSegments.push([body.x, body.y]);
     body.pathSegments.map(([x, y]) => {
@@ -151,8 +139,6 @@ export class StarSystemCanvasComponent extends HTMLCanvasElement {
       body.pathSegments.splice(0, 1);
     }
   }
-
-  // virvite mne ruki
 }
 
 customElements.define("star-system-canvas", StarSystemCanvasComponent, {
