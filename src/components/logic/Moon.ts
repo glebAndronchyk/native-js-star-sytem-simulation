@@ -13,10 +13,16 @@ export class Moon extends MovableBody {
   }
 
   update(bodyCenterX: number, bodyCenterY: number) {
-    const nextFramePositionX =
-      bodyCenterX + this.velocity.getX() + this.distanceFromPlanet;
-    const nextFramePositionY =
-      bodyCenterY + this.velocity.getY() + this.distanceFromPlanet;
+    const deltaX = this.x - bodyCenterX;
+    const deltaY = this.y - bodyCenterY;
+
+    const angle = Math.atan2(deltaY, deltaX);
+
+    const distanceFromPlanetX = this.distanceFromPlanet * Math.cos(angle);
+    const distanceFromPlanetY = this.distanceFromPlanet * Math.sin(angle);
+
+    const nextFramePositionX = bodyCenterX + distanceFromPlanetX;
+    const nextFramePositionY = bodyCenterY + distanceFromPlanetY;
 
     this.x = nextFramePositionX;
     this.y = nextFramePositionY;
