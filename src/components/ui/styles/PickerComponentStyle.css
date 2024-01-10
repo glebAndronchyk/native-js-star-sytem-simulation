@@ -5,10 +5,10 @@
   z-index: 100;
   background-color: #fff;
   color: #000;
+}
 
-  .picker-form {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
+.picker-form {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }

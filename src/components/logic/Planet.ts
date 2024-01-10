@@ -10,7 +10,12 @@ export class Planet extends MovableBody implements PlanetSignature {
 
   constructor({ moons = [], ...args }: PlanetSignature) {
     super(args);
-    this.moons = moons;
+    this.moons = moons?.map((moon) => {
+      moon.x = args.x + moon.distanceFromPlanetX;
+      moon.y = args.y + moon.distanceFromPlanetY;
+
+      return moon;
+    });
   }
 
   update() {

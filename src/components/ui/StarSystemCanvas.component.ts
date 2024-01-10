@@ -70,14 +70,17 @@ export class StarSystemCanvasComponent extends HTMLCanvasElement {
 
   private updateContent() {
     this.planets.forEach((planet) => {
-      planet.attractsTo(this.star as Star);
-      this.updatePathSegments(planet);
+      if (planet.name ) {
+        planet.attractsTo(this.star as Star);
+      }
+      this.updatePathSegments(planet); // trail
 
       planet.update();
 
       planet.moons?.forEach((moon) => {
         moon.attractsTo(planet);
-        moon.update(planet.x, planet.y);
+        moon.update({relation: planet});
+        // this.updatePathSegments(moon); // trail
       });
     });
   }
@@ -145,7 +148,7 @@ export class StarSystemCanvasComponent extends HTMLCanvasElement {
   private updatePathSegments(body: MovableBody) {
     body.pathSegments.push([body.x, body.y]);
     body.pathSegments.map(([x, y]) => {
-      this.drawCircle({ x, y, r: 2, color: body.color });
+      this.drawCircle({ x, y, r: 0.6, color: body.color });
     });
     if (body.pathSegments.length > 120) {
       body.pathSegments.splice(0, 1);

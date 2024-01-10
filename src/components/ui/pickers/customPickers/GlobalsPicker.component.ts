@@ -6,9 +6,9 @@ export class GlobalsPickerComponent extends HTMLFormElement {
     this.innerHTML = `
         <div>
             <label for="G">G</label>
-            <input type="number" name="G" value=${globalState.G} />
+            <input type="number" name="G" step="0.001" value=${globalState.G} />
         </div>
-        <button type="submit">Set</button>
+        <button type="submit" >Set</button>
     `;
 
     this.classList.add("globals-picker");

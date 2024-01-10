@@ -101,7 +101,7 @@ export class PickerComponent extends HTMLDivElement {
 
     const pickerDiv = document.createElement("div");
     pickerDiv.classList.add("picker");
-    pickerDiv.style.left = `${leftPos + 10}px`;
+    pickerDiv.style.left = `${leftPos - 50}px`;
     pickerDiv.style.top = `${top + 30}px`;
 
     return pickerDiv;

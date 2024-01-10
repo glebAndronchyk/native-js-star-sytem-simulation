@@ -25,10 +25,10 @@ export class PlanetPickerComponent extends PickerComponent {
       const cY = canvas.height / 2;
 
       const { x, y, r, color, mass, speed, name } = formValues as any;
-
-      if (!x || !y || !r || !mass || !speed) {
-        return;
-      }
+      //
+      // if (!x || !y || !r || !mass || !speed) {
+      //   return;
+      // }
 
       canvas.planets.push(
         new Planet({

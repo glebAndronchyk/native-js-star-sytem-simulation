@@ -22,15 +22,12 @@ export class MoonPickerComponent extends PickerComponent {
       const formValues = getFormValues(form.elements);
       const planetIdx = +(this.getAttribute("planet-idx") as string);
 
-      const { r, color, mass, speed, name } = formValues as any;
-
-      // if (!r || !mass || !speed) {
-      //   return;
-      // }
+      const { r, color, mass, speed, name, distanceFromPlanetX, distanceFromPlanetY } = formValues as any;
 
       canvas.planets[planetIdx].moons?.push(
         new Moon({
-          distanceFromPlanet: 50,
+          distanceFromPlanetX: +distanceFromPlanetX || 0,
+          distanceFromPlanetY: +distanceFromPlanetY || 0,
           r: +r,
           color: color || "white",
           mass: +mass,
@@ -49,7 +46,7 @@ export class MoonPickerComponent extends PickerComponent {
           const formValues = getFormValues(form.elements);
           const planetIdx = +(this.getAttribute("planet-idx") as string);
 
-          const { r, color, distanceFromPlanet } = formValues as any;
+          const { r, color, distanceFromPlanetX } = formValues as any;
 
           moonSkeleton.setValues({
             visible: true,
@@ -58,7 +55,7 @@ export class MoonPickerComponent extends PickerComponent {
             r: +r,
             color: color || "white",
             relatedObjectIndex: planetIdx,
-            customOffset: +distanceFromPlanet || 50,
+            customOffset: +distanceFromPlanetX || 50,
           });
         });
       }
@@ -74,7 +71,8 @@ export class MoonPickerComponent extends PickerComponent {
             <input type="text" name="color" placeholder="Color" />
             <input type="number" name="mass" placeholder="Moon mass" />
             <input type="number" name="r" placeholder="Moon radius" />
-            <input type="number" name="distanceFromPlanet" placeholder="Distance From Planet" />
+            <input type="number" name="distanceFromPlanet" placeholder="Distance From Planet X" />
+            <input type="number" name="distanceFromPlanet" placeholder="Distance From Planet Y" />
             <input type="number" name="speed" step="0.01" placeholder="Moon speed" />            
     `,
       submitCallback,

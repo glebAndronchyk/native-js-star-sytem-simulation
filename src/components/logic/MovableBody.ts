@@ -34,7 +34,7 @@ export abstract class MovableBody implements MovableBodySignature {
     this.name = args.name;
   }
 
-  abstract update(bX?: number, bY?: number): void;
+  abstract update({relation}: {relation: MovableBody}): void;
 
   attractsTo(spaceBody: SpaceBody) {
     const gravity = new Vector(0, 0);
